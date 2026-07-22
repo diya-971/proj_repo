@@ -10,14 +10,16 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                // Jenkins automatically checks out the repository
-                checkout scm
+                git branch: 'Main',
+                    url: 'https://github.com/diya-971/proj_repo.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME}:latest .'
+                sh '''
+                docker build -t ${IMAGE_NAME}:latest .
+                '''
             }
         }
 
@@ -34,9 +36,17 @@ pipeline {
             steps {
                 sh '''
                 docker run -d \
-                --name ${CONTAINER_NAME} \
-                -p 8080:80 \
-                ${IMAGE_NAME}:latest
+                  --name ${CONTAINER_NAME} \
+                  -p 8081:80 \
+                  ${IMAGE_NAME}:latest
+                '''
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh '''
+                docker ps
                 '''
             }
         }
@@ -44,7 +54,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline executed successfully.'
         }
 
         failure {
@@ -53,7 +63,6 @@ pipeline {
 
         always {
             sh 'docker images'
-            sh 'docker ps -a'
         }
     }
 }
