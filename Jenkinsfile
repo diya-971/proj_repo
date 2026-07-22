@@ -21,8 +21,7 @@ pipeline {
             steps {
 
                 git branch: 'main',
-                url: 'https://github.com/yourusername/my-website.git'
-
+                url: 'https://github.com/diya-971/proj_repo.git'
             }
 
         }
